@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Workspace</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+<%= link_to "HOME", root_path %>
+<% if user_signed_in? %>
+  <%= link_to "로그아웃", destroy_user_session_path, method: "delete" %>
+  <span> current_user : </span><%= current_user.name %>
+  <%= link_to "회원탈퇴", edit_user_registration_path, method: "delete",  data: { confirm: '정말 탈퇴 하시겠습니까?' } %>
+<% else %>
+  <%= link_to "회원가입", new_user_registration_path %>
+  <%= link_to "로그인", new_user_session_path %>
+<% end %>
+
+
+<%= yield %>
+
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDzGzfoKavbptDwUVbDSacFm0r2YcAUSAo&callback=initMap" async defer></script>
+</body>
+</html>
