@@ -14,32 +14,83 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require_tree .
-
-function getGeocode(address, resultsMap) {
-  var geocoder = new google.maps.Geocoder();
-
-  geocoder.geocode({'address': address}, function(results, status) {
-    if (status === google.maps.GeocoderStatus.OK) {
-      resultsMap.setCenter(results[0].geometry.location);
-      makeMarker(resultsMap, results[0].geometry.location)
-    } else {
-      alert('Geocode was not successful for the following reason: ' + status);
-    }
+  
+function initMap() {
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 10,
+    center: {lat: 37.539, lng: 126.961}
   });
+  var markers = [];
+
+  //dot리스트을 불러와 marker 표시  
+  $.ajax({
+        url: "/dots.json",
+        type: "GET",    
+        contentType: "application/json; charset=utf-8",
+        dataType: "json"
+    }).done(function(data) {
+      $.each(data, function(index, value) {
+          var marker = new google.maps.Marker({map: map,
+          });
+          marker.setPosition({lat : value.lat, lng : value.lng});
+          markers[value.id] = marker;
+      });
+  });
+  
+  //dot생성 버튼 액션
+  $('.makingDot').click(function() {
+    makeDot(map,markers);
+  });
+  
+  
+  //dot삭제 버튼 액션
+  $('body').on('click', '.destroyingDot', function () {
+      destroyDot(map,markers,this.id);
+  });
+  //새로 생성한 dot의 경수 작동하지 않음 <위와 같이 개선>
+  //$('.destroyingDot').click(function() {
+  //console.log("1")
+  //destroyDot(map,markers,this.id);
+  //});
+  
+  //dot수정 버튼 액션
+  //  document.getElementById('editingDot').addEventListener('click',function() {
+  //editDot(map);
+  //  });
 }
 
-function getGeolocation(map) { 
-    if (navigator.geolocation) {
+
+function makeDot(map,markers) {
+  //현재위치를 불러와 dot0에 저장
+  if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
-          var pos = {
+          var dot0 = {
             lat: position.coords.latitude,
             lng: position.coords.longitude
           };
-        
-        //Latlng(=pos) 활용
-        makeInfoWindow(map, pos, 'Location found.')
-        makeMarker(map, pos)
-        map.setCenter(pos);
+
+  //DB에 dot0을 저장하고,  성공하면 리스트와 맵에 표시
+        $.post('/dots',
+                dot0,
+                function(data){
+                    $("#dots").append("<div class='dot'" + "id="+data.id+">"+
+                                      "<li>"+"latitude: "+data.lat+"<br>"+
+                                      "longitude: "+data.lng+
+                                      "<button class='editingDot' id="+ data.id +">수정</button>"+
+                                      "<button class='destroyingDot' id="+data.id+">삭제</button>"+
+                                      "</li>"+
+                                      "</div>");
+                    //console.log(data.lat);    
+
+                    //마커 만들기
+                    var marker = new google.maps.Marker({map: map});
+                    marker.setPosition({lat : data.lat, lng: data.lng}); 
+                    markers[data.id] = marker;
+                    
+                    //맵의 중심 이동
+                    map.setCenter({lat : data.lat, lng: data.lng});
+                    map.setZoom(18)
+                    });
 
         }, function() {
             makeInfoWindow(map, map.center(), 'Error: The Geolocation service failed.')
@@ -50,14 +101,18 @@ function getGeolocation(map) {
     }
 }
 
-//make marker and moving map's center
-function makeMarker(map, latlng){
-    var marker = new google.maps.Marker({map: map});
-    marker.setPosition(latlng); 
+function editDot(){
+  
 }
 
-function makeInfoWindow(map, latlng, content){
-    var infoWindow = new google.maps.InfoWindow({map: map});
-    infoWindow.setPosition(latlng);
-    infoWindow.setContent(content);
+function destroyDot(map,markers,dotId){
+  $.ajax({
+      url: "/dots/" + dotId,
+      type: "Delete",
+      success: function(result){
+        $(".dot#"+result).remove();
+        markers[result].setMap(null);
+      }
+  });
 }
+

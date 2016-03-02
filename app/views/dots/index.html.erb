@@ -1,35 +1,28 @@
-<h1>Dots#index</h1>
-<p>Find me in app/views/dots/index.html.erb</p>
-
-
-<div id="floating-panel">
-    <input id="address" type="textbox" value="Sydney, NSW">
-    <input id="geocode-submit" type="button" value="Geocode">
-</div>
-<div id="floating-panel">
-    <input id="location" type="textbox" value="lat,lng">
-    <input id="geolocation-submit" type="button" value="Geolocation">
-</div>
-
+<h1>index</h1>
 
 <div id="map"></div>
 
-    
-    
-<script>
-function initMap() {
-  var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 8,
-    center: {lat: -34.397, lng: 150.644}
-  });
+<div>
+    <button class="makingDot">dot!</button>
+</div>
 
-  document.getElementById('geocode-submit').addEventListener('click', function() {
-    getGeocode(document.getElementById('address').value,map);
-  });
-  
-  document.getElementById('geolocation-submit').addEventListener('click',function() {
-    getGeolocation(map);      
-  });
-}
+<div id="editDot">
+    <form>
+        
+    </form>
+</div>
 
-</script>
+
+
+<div id="dots">
+    <% @dots.each do |p| %>
+    <div class='dot' id="<%=p.id%>">
+       <li>
+       latitude: <%=p.lat%> <br>
+       longitude: <%=p.lng%>
+       <button class='editingDot' id="<%=p.id%>">수정</button>
+       <button class='destroyingDot' id="<%=p.id%>">삭제</button>
+       </li>
+    </div>
+    <% end %>
+</div>
