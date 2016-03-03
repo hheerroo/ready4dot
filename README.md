@@ -22,3 +22,7 @@ The Cloud9 IDE team
 
 Visit http://docs.c9.io for support, or to learn more about using Cloud9 IDE. 
 To watch some training videos, visit http://www.youtube.com/user/c9ide
+
+문제점 몇가지
+1. markers // 아이디에 따라 배열정리, 비효율적 dot이 많아지면 비대해지는 배열크기
+2. 

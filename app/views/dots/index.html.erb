@@ -3,16 +3,8 @@
 <div id="map"></div>
 
 <div>
-    <button class="makingDot">dot!</button>
+    <button id="makingDot">dot!</button>
 </div>
-
-<div id="editDot">
-    <form>
-        
-    </form>
-</div>
-
-
 
 <div id="dots">
     <% @dots.each do |p| %>
@@ -20,9 +12,57 @@
        <li>
        latitude: <%=p.lat%> <br>
        longitude: <%=p.lng%>
-       <button class='editingDot' id="<%=p.id%>">수정</button>
-       <button class='destroyingDot' id="<%=p.id%>">삭제</button>
+       <button class='editingDot' id="<%=p.id%>" type="button" data-toggle="modal" data-target="#myDot">수정</button>
        </li>
     </div>
     <% end %>
+</div>
+
+<!-- edit Dot Modal -->
+<div class="modal fade" id="myDot" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myDotLabel">Dot title</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+            <div class="form-group">
+                <input type="hidden" class="form-control" id="dotId" >
+            </div>
+            <div class="form-group">
+                <label for="exampleInputFile">이미지 업로드(현재 미지원)</label>
+                <input type="file" id="exampleInputFile">
+            <p class="help-block">여기에 블록레벨 도움말 예제</p>
+            </div>
+            <div class="form-group">
+                <label>latitude</label>
+                <input type="text" class="form-control" id="dotLat" >
+            </div>
+            <div class="form-group">
+                <label>longitude</label>
+                <input type="text" class="form-control" id="dotLng" >
+            </div>
+            <div class="form-group">
+                <label>content</label>
+                <input type="text" class="form-control" id="dotContent">
+            </div>
+            <div class="form-group">
+                <label>stat_id</label>
+                <input type="text" class="form-control" id="dotStat_id" >
+            </div>
+            <div class="form-group">
+                <label>updated_at</label>
+                <p id="dotUpdated_at"></p>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" id="updatingDot">Dot update</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal" id="destroyingDot" >Delete</button>
+      </div>
+    </div>
+  </div>
 </div>

@@ -38,14 +38,14 @@ function initMap() {
   });
   
   //dot생성 버튼 액션
-  $('.makingDot').click(function() {
+  $('#makingDot').click(function() {
     makeDot(map,markers);
   });
   
   
   //dot삭제 버튼 액션
-  $('body').on('click', '.destroyingDot', function () {
-      destroyDot(map,markers,this.id);
+  $('body').on('click', '#destroyingDot', function () {
+      destroyDot(map,markers,$("#dotId").val());
   });
   //새로 생성한 dot의 경수 작동하지 않음 <위와 같이 개선>
   //$('.destroyingDot').click(function() {
@@ -54,9 +54,14 @@ function initMap() {
   //});
   
   //dot수정 버튼 액션
-  //  document.getElementById('editingDot').addEventListener('click',function() {
-  //editDot(map);
-  //  });
+  $('body').on('click', '.editingDot', function () {
+      editDot(map,markers,this.id);
+  });
+  //dot업데이트 버튼 액션
+  $('body').on('click', '#updatingDot', function () {
+      updateDot(map,markers);
+  });
+  
 }
 
 
@@ -68,6 +73,17 @@ function makeDot(map,markers) {
             lat: position.coords.latitude,
             lng: position.coords.longitude
           };
+  
+  //geocoder을 이용한 address만들기
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode({'location': dot0}, function(results, status) {
+      if (status === google.maps.GeocoderStatus.OK) {
+        //adress : results[0].formatted_address
+        //$("#address").val(results[0].formatted_address);
+      } else {
+      alert('Geocode was not successful for the following reason: ' + status);
+      }
+    });
 
   //DB에 dot0을 저장하고,  성공하면 리스트와 맵에 표시
         $.post('/dots',
@@ -76,8 +92,8 @@ function makeDot(map,markers) {
                     $("#dots").append("<div class='dot'" + "id="+data.id+">"+
                                       "<li>"+"latitude: "+data.lat+"<br>"+
                                       "longitude: "+data.lng+
-                                      "<button class='editingDot' id="+ data.id +">수정</button>"+
-                                      "<button class='destroyingDot' id="+data.id+">삭제</button>"+
+                                      " <button class='editingDot' id="+ data.id +"type='button' data-toggle='modal' data-target='#myDot'"+
+                                      ">수정</button>"+
                                       "</li>"+
                                       "</div>");
                     //console.log(data.lat);    
@@ -101,8 +117,50 @@ function makeDot(map,markers) {
     }
 }
 
-function editDot(){
+function editDot(map, markers, dotId){
+  //dotId.json을 통해 수정할 dot 로드
+  $.ajax({
+    url: "dots/"+dotId+".json",
+    type: "GET",
+    success: function(dot){
+      //dot 로드 성공시 edit 폼에 내용 입력
+      $("#dotId").val(dot.id);
+      $("#dotLat").val(dot.lat);
+      $("#dotLng").val(dot.lng);
+      $("#dotContent").val(dot.content);
+      $("#dotStat_id").val(dot.stat_id);
+      $("#dotUpdated_at").text(dot.updated_at);
+      //console.log(dot);
+    }
+  })
+}
+
+function updateDot(map,markers){
+  var dot1 = {
+        id : $("#dotId").val(),
+        lat : $("#dotLat").val(),
+        lng : $("#dotLng").val(),
+        content : $("#dotContent").val(),
+        stat_id : $("#dotStat_id").val()
+      }
   
+  $.ajax({
+    url: "dots/"+dot1.id,
+    data: dot1,
+    type: "PATCH",
+    success: function(dot){
+      //marker수정하고 중앙으로
+      markers[dot.id].setPosition({lat:dot.lat,lng:dot.lng});
+      map.setCenter({lat:dot.lat,lng:dot.lng});
+      //dot리스트 수정
+      $(".dot#"+dot.id).html("<li>"+"latitude: "+dot.lat+"<br>"+
+                              "longitude: "+dot.lng+
+                              " <button class='editingDot' id="+ dot.id +
+                              "type='button' data-toggle='modal' data-target='#myDot'"+">수정</button>"+
+                              "</li>");
+      //console.log(dot)
+    }
+  })
 }
 
 function destroyDot(map,markers,dotId){
@@ -110,6 +168,7 @@ function destroyDot(map,markers,dotId){
       url: "/dots/" + dotId,
       type: "Delete",
       success: function(result){
+        //db삭제 후 dot div삭제, marker삭제
         $(".dot#"+result).remove();
         markers[result].setMap(null);
       }
