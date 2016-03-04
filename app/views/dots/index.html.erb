@@ -1,9 +1,10 @@
 <!-- main map -->
-
 <div class="col-md-9" >
     <div class="" id="map"></div>
 </div>
 
+<!-- -->
+<% if user_signed_in? %>
 <div class="col-md-3">
     <!-- make Dot -->
     <div>
@@ -78,3 +79,12 @@
     </div>
   </div>
 </div>
+
+<!-- -->
+<% else %>
+<div class="col-md-3">
+    <div class="alert alert-info" role="alert">dot을 이용하기 위해서는 로그인이 필요합니다.</div>
+</div>
+
+
+<% end %>
