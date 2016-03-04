@@ -2,28 +2,50 @@
 <html>
 <head>
   <title>Workspace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
   <!-- 부트스트랩 추가 -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
-
-  
 </head>
 <body>
-<%= link_to "HOME", root_path %>
-<% if user_signed_in? %>
-  <%= link_to "로그아웃", destroy_user_session_path, method: "delete" %>
-  <span> current_user : </span><%= current_user.name %>
-  <%= link_to "회원탈퇴", edit_user_registration_path, method: "delete",  data: { confirm: '정말 탈퇴 하시겠습니까?' } %>
-<% else %>
-  <%= link_to "회원가입", new_user_registration_path %>
-  <%= link_to "로그인", new_user_session_path %>
-<% end %>
+
+
+
+<div class="container">
+      <!-- Static navbar -->
+      <nav class="navbar navbar-default navbar-static-top">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ready4dot</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+              <% if user_signed_in? %>
+                <li><a>current_user : <%= current_user.name %></a></li>
+                <li><%= link_to "로그아웃", destroy_user_session_path, method: "delete" %></li>
+                <li><%= link_to "회원탈퇴", edit_user_registration_path, method: "delete",  data: { confirm: '정말 탈퇴 하시겠습니까?' } %></li>
+              <% else %>
+                <li><%= link_to "회원가입", new_user_registration_path %></li>
+                <li><%= link_to "로그인", new_user_session_path %></li>
+              <% end %>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+      </nav>
 
 
 <%= yield %>
+
+</div> <!-- /container -->
 
 <!-- 구글 맵 등록 -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDzGzfoKavbptDwUVbDSacFm0r2YcAUSAo&callback=initMap" async defer></script>

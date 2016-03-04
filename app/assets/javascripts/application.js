@@ -37,9 +37,29 @@ function initMap() {
       });
   });
   
+  
   //dot생성 버튼 액션
   $('#makingDot').click(function() {
-    makeDot(map,markers);
+    //현재위치를 불러와 latlng에 저장
+    // 버튼 로딩 변경 차후 추가
+
+    if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var latlng = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            //latlng을 이용한 dot생성
+            makeDot(map,markers,latlng);
+          }, function() {
+              makeInfoWindow(map, map.center(), 'Error: The Geolocation service failed.')
+          });
+      } else {
+          // Browser doesn't support Geolocation
+          makeInfoWindow(map, map.center(), 'Error: Your browser doesn\'t support geolocation.')
+      }
+      
+
   });
   
   
@@ -54,7 +74,7 @@ function initMap() {
   //});
   
   //dot수정 버튼 액션
-  $('body').on('click', '.editingDot', function () {
+  $('body').on('click', '.dot', function () {
       editDot(map,markers,this.id);
   });
   //dot업데이트 버튼 액션
@@ -65,18 +85,30 @@ function initMap() {
 }
 
 
-function makeDot(map,markers) {
-  //현재위치를 불러와 dot0에 저장
-  if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-          var dot0 = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
-  
-  //geocoder을 이용한 address만들기
+function makeDot(map,markers,latlng) {
+
+  //DB에 dot0을 저장하고,  성공하면 리스트와 맵에 표시
+  $.post('/dots',
+          latlng,
+          function(dot){
+              $("#dots").append("<a class='dot list-group-item' id='"+dot.id+
+                                "' type='button'  data-toggle='modal' data-target='#myDot'>"+
+                                "<p class='list-group-item-text'>"+
+                                "Dot id: "+dot.id+ "</p></a>");
+              //console.log(data.lat);    
+
+              //마커 만들기
+              var marker = new google.maps.Marker({map: map});
+              marker.setPosition({lat : data.lat, lng: data.lng}); 
+              markers[data.id] = marker;
+              
+              //맵의 중심 이동
+              map.setCenter({lat : data.lat, lng: data.lng});
+              map.setZoom(18)
+              });
+    //geocoder을 이용한 address만들기
     var geocoder = new google.maps.Geocoder();
-    geocoder.geocode({'location': dot0}, function(results, status) {
+    geocoder.geocode({'location': latlng}, function(results, status) {
       if (status === google.maps.GeocoderStatus.OK) {
         //adress : results[0].formatted_address
         //$("#address").val(results[0].formatted_address);
@@ -84,37 +116,6 @@ function makeDot(map,markers) {
       alert('Geocode was not successful for the following reason: ' + status);
       }
     });
-
-  //DB에 dot0을 저장하고,  성공하면 리스트와 맵에 표시
-        $.post('/dots',
-                dot0,
-                function(data){
-                    $("#dots").append("<div class='dot'" + "id="+data.id+">"+
-                                      "<li>"+"latitude: "+data.lat+"<br>"+
-                                      "longitude: "+data.lng+
-                                      " <button class='editingDot' id="+ data.id +"type='button' data-toggle='modal' data-target='#myDot'"+
-                                      ">수정</button>"+
-                                      "</li>"+
-                                      "</div>");
-                    //console.log(data.lat);    
-
-                    //마커 만들기
-                    var marker = new google.maps.Marker({map: map});
-                    marker.setPosition({lat : data.lat, lng: data.lng}); 
-                    markers[data.id] = marker;
-                    
-                    //맵의 중심 이동
-                    map.setCenter({lat : data.lat, lng: data.lng});
-                    map.setZoom(18)
-                    });
-
-        }, function() {
-            makeInfoWindow(map, map.center(), 'Error: The Geolocation service failed.')
-        });
-    } else {
-        // Browser doesn't support Geolocation
-        makeInfoWindow(map, map.center(), 'Error: Your browser doesn\'t support geolocation.')
-    }
 }
 
 function editDot(map, markers, dotId){
@@ -153,11 +154,8 @@ function updateDot(map,markers){
       markers[dot.id].setPosition({lat:dot.lat,lng:dot.lng});
       map.setCenter({lat:dot.lat,lng:dot.lng});
       //dot리스트 수정
-      $(".dot#"+dot.id).html("<li>"+"latitude: "+dot.lat+"<br>"+
-                              "longitude: "+dot.lng+
-                              " <button class='editingDot' id="+ dot.id +
-                              "type='button' data-toggle='modal' data-target='#myDot'"+">수정</button>"+
-                              "</li>");
+      $(".dot#"+dot.id).html("<p class='list-group-item-text'>"+
+                                "Dot id: "+dot.id+ "</p>");
       //console.log(dot)
     }
   })

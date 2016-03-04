@@ -1,21 +1,29 @@
-<h1>index</h1>
+<!-- main map -->
 
-<div id="map"></div>
-
-<div>
-    <button id="makingDot">dot!</button>
+<div class="col-md-9" >
+    <div class="" id="map"></div>
 </div>
 
-<div id="dots">
-    <% @dots.each do |p| %>
-    <div class='dot' id="<%=p.id%>">
-       <li>
-       latitude: <%=p.lat%> <br>
-       longitude: <%=p.lng%>
-       <button class='editingDot' id="<%=p.id%>" type="button" data-toggle="modal" data-target="#myDot">수정</button>
-       </li>
+<div class="col-md-3">
+    <!-- make Dot -->
+    <div>
+        <button type="button" class="btn btn-info btn-lg btn-block" id="makingDot">
+            <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> Dot! 
+            </button>
     </div>
-    <% end %>
+    
+    <br>
+    <!-- Dot list -->
+    <div>
+        <div class="list-group" id="dots">
+            <% @dots.each do |p| %>
+            <a class='dot list-group-item' id="<%=p.id%>" type="button"  data-toggle="modal" data-target="#myDot">
+               <p class="list-group-item-text">
+               Dot id: <%=p.id%> </p>
+            </a>
+            <% end %>
+        </div>
+    </div>
 </div>
 
 <!-- edit Dot Modal -->
@@ -60,7 +68,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" id="updatingDot">Dot update</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" id="updatingDot">Update</button>
         <button type="button" class="btn btn-danger" data-dismiss="modal" id="destroyingDot" >Delete</button>
       </div>
     </div>
