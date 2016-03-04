@@ -17,8 +17,8 @@
   
 function initMap() {
   var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 10,
-    center: {lat: 37.539, lng: 126.961}
+    zoom: 3,
+    center: {lat: 0, lng: 180}
   });
   var markers = [];
 
@@ -86,10 +86,24 @@ function initMap() {
 
 
 function makeDot(map,markers,latlng) {
-
+  //geocoder을 이용한 address만들기
+  var geocoder = new google.maps.Geocoder();
+  geocoder.geocode({'location': latlng}, function(results, status) {
+    if (status === google.maps.GeocoderStatus.OK) {
+      //adress : results[0].formatted_address
+      //$("#address").val(results[0].formatted_address);
+      var address0 = results[0].formatted_address;
+    } else {
+    alert('Geocode was not successful for the following reason: ' + status);
+    }
+      
   //DB에 dot0을 저장하고,  성공하면 리스트와 맵에 표시
   $.post('/dots',
-          latlng,
+          {lat: latlng.lat,
+           lng: latlng.lng,
+           address: address0,
+           stat_id: "1"
+          },
           function(dot){
               $("#dots").append("<a class='dot list-group-item' id='"+dot.id+
                                 "' type='button'  data-toggle='modal' data-target='#myDot'>"+
@@ -99,22 +113,15 @@ function makeDot(map,markers,latlng) {
 
               //마커 만들기
               var marker = new google.maps.Marker({map: map});
-              marker.setPosition({lat : data.lat, lng: data.lng}); 
-              markers[data.id] = marker;
+              marker.setPosition({lat : dot.lat, lng: dot.lng}); 
+              markers[dot.id] = marker;
               
               //맵의 중심 이동
-              map.setCenter({lat : data.lat, lng: data.lng});
+              map.setCenter({lat : dot.lat, lng: dot.lng});
               map.setZoom(18)
               });
-    //geocoder을 이용한 address만들기
-    var geocoder = new google.maps.Geocoder();
-    geocoder.geocode({'location': latlng}, function(results, status) {
-      if (status === google.maps.GeocoderStatus.OK) {
-        //adress : results[0].formatted_address
-        //$("#address").val(results[0].formatted_address);
-      } else {
-      alert('Geocode was not successful for the following reason: ' + status);
-      }
+              
+
     });
 }
 

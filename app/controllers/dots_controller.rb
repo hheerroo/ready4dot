@@ -17,6 +17,7 @@ class DotsController < ApplicationController
                content: params[:content],
                lat: params[:lat],
                lng: params[:lng],
+               address: params[:address],
                stat_id: params[:stat_id])
     render json: dot
     #render :text => "longitude : #{dot.lng}<br>latitude: #{dot.lat}".html_safe
@@ -32,6 +33,7 @@ class DotsController < ApplicationController
     dot1 = Dot.find(params[:id])
     dot1.lat = params[:lat]
     dot1.lng = params[:lng]
+    dot1.address = params[:address]
     dot1.content = params[:content]
     dot1.stat_id = params[:stat_id]
     dot1.save

@@ -15,12 +15,13 @@ ActiveRecord::Schema.define(version: 20160224004049) do
 
   create_table "dots", force: :cascade do |t|
     t.integer  "user_id"
-    t.integer  "stat_id"
+    t.integer  "stat_id",    default: 1
     t.text     "content"
     t.float    "lat"
     t.float    "lng"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.text     "address"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
   create_table "users", force: :cascade do |t|
