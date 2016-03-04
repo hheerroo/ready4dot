@@ -19,7 +19,7 @@
             <% @dots.each do |p| %>
             <a class='dot list-group-item' id="<%=p.id%>" type="button"  data-toggle="modal" data-target="#myDot">
                <p class="list-group-item-text">
-               Dot id: <%=p.id%> </p>
+               Dot<%=p.id%> <%=p.content%></p>
             </a>
             <% end %>
         </div>
@@ -51,6 +51,10 @@
             <div class="form-group">
                 <label>longitude</label>
                 <input type="text" class="form-control" id="dotLng" >
+            </div>
+            <div class="form-group">
+                <label>address</label>
+                <input type="text" class="form-control" id="dotAddress" >
             </div>
             <div class="form-group">
                 <label>content</label>

@@ -102,13 +102,14 @@ function makeDot(map,markers,latlng) {
           {lat: latlng.lat,
            lng: latlng.lng,
            address: address0,
-           stat_id: "1"
+           stat_id: "1",
+           content: "이곳은?",
           },
           function(dot){
               $("#dots").append("<a class='dot list-group-item' id='"+dot.id+
                                 "' type='button'  data-toggle='modal' data-target='#myDot'>"+
                                 "<p class='list-group-item-text'>"+
-                                "Dot id: "+dot.id+ "</p></a>");
+                                "Dot"+dot.id+" "+dot.content+ "</p></a>");
               //console.log(data.lat);    
 
               //마커 만들기
@@ -135,6 +136,7 @@ function editDot(map, markers, dotId){
       $("#dotId").val(dot.id);
       $("#dotLat").val(dot.lat);
       $("#dotLng").val(dot.lng);
+      $("#dotAddress").val(dot.address);
       $("#dotContent").val(dot.content);
       $("#dotStat_id").val(dot.stat_id);
       $("#dotUpdated_at").text(dot.updated_at);
@@ -148,6 +150,7 @@ function updateDot(map,markers){
         id : $("#dotId").val(),
         lat : $("#dotLat").val(),
         lng : $("#dotLng").val(),
+        address : $("#dotAddress").val(),
         content : $("#dotContent").val(),
         stat_id : $("#dotStat_id").val()
       }
@@ -162,7 +165,7 @@ function updateDot(map,markers){
       map.setCenter({lat:dot.lat,lng:dot.lng});
       //dot리스트 수정
       $(".dot#"+dot.id).html("<p class='list-group-item-text'>"+
-                                "Dot id: "+dot.id+ "</p>");
+                                "Dot"+dot.id+" "+dot.content+ "</p>");
       //console.log(dot)
     }
   })
