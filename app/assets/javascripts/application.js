@@ -16,11 +16,19 @@
 //= require_tree .
   
 function initMap() {
+  //메인 맵
   var map = new google.maps.Map(document.getElementById('map'), {
     zoom: 3,
     center: {lat: 0, lng: 180}
   });
   var markers = [];
+  
+  //dot 수정에 활용하는 맵
+  var dotMap = new google.maps.Map(document.getElementById('dotMap'), {
+    zoom: 16,
+    center: {lat: 0, lng: 180}
+  });
+  var dotMarker = new google.maps.Marker({map: dotMap});
 
   //dot리스트을 불러와 marker 표시  
   $.ajax({
@@ -75,13 +83,18 @@ function initMap() {
   
   //dot수정 버튼 액션
   $('body').on('click', '.dot', function () {
-      editDot(map,markers,this.id);
+      editDot(map,markers,this.id,dotMap,dotMarker);
   });
   //dot업데이트 버튼 액션
   $('body').on('click', '#updatingDot', function () {
       updateDot(map,markers);
   });
-  
+  //dot수정시 위치변경 액션
+  dotMap.addListener('dblclick',function (e) {
+      $("#dotLat").val(e.latLng.lat());
+      $("#dotLng").val(e.latLng.lng());
+      dotMarker.setPosition({lat: e.latLng.lat(), lng: e.latLng.lng()});
+  });
 }
 
 
@@ -126,7 +139,7 @@ function makeDot(map,markers,latlng) {
     });
 }
 
-function editDot(map, markers, dotId){
+function editDot(map, markers, dotId,dotMap,dotMarker){
   //dotId.json을 통해 수정할 dot 로드
   $.ajax({
     url: "dots/"+dotId+".json",
@@ -140,6 +153,8 @@ function editDot(map, markers, dotId){
       $("#dotContent").val(dot.content);
       $("#dotStat_id").val(dot.stat_id);
       $("#dotUpdated_at").text(dot.updated_at);
+      dotMap.setCenter({lat:dot.lat, lng:dot.lng});
+      dotMarker.setPosition({lat:dot.lat, lng:dot.lng});
       //console.log(dot);
     }
   })
