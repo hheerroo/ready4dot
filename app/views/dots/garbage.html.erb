@@ -58,4 +58,16 @@ function getGeolocation(map) {
         makeInfoWindow(map, map.center(), 'Error: Your browser doesn\'t support geolocation.')
     }
 }
+
+  //dotMap 세팅. 제대로 로드되지않는 버그로 리사이즈실행 
+  $('.dot').on('shown', function (e) {
+       
+    var myMap = document.getElementById('dotMap');
+ 
+    google.maps.event.trigger(myMap, 'resize');
+  });
+  $('body').on('shown', '.dot', function () {
+    //google.maps.event.trigger(window, 'resize', {});
+    console.log(1);
+  });
 </script>

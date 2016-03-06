@@ -84,8 +84,18 @@ function initMap() {
   
   //dot수정 버튼 액션
   $('body').on('click', '.dot', function () {
+    //google.maps.event.trigger($("#dotMap")[0], 'resize');
       editDot(map,markers,this.id,dotMap,dotMarker);
   });
+  
+  //modal속의 구글맵이 로드되지 않는 문제 해결
+  $("#myDot").on("shown.bs.modal", function () {
+      google.maps.event.trigger(dotMap, "resize");
+      dotMap.setCenter({lat: parseFloat($("#dotLat").val()) , lng: parseFloat($("#dotLng").val())});
+      dotMarker.setPosition({lat: parseFloat($("#dotLat").val()) , lng: parseFloat($("#dotLng").val())});
+      //console.log(1);
+  });
+
   //dot업데이트 버튼 액션
   $('body').on('click', '#updatingDot', function () {
       updateDot(map,markers);
@@ -95,6 +105,17 @@ function initMap() {
       $("#dotLat").val(e.latLng.lat());
       $("#dotLng").val(e.latLng.lng());
       dotMarker.setPosition({lat: e.latLng.lat(), lng: e.latLng.lng()});
+      //address 변경
+      var geocoder = new google.maps.Geocoder();
+      geocoder.geocode({'location': {lat: e.latLng.lat(), lng: e.latLng.lng()}}, function(results, status) {
+        if (status === google.maps.GeocoderStatus.OK) {
+          //adress : results[0].formatted_address
+          //console.log(results[0]);
+          $("#dotAddress").val(results[0].formatted_address);
+        } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+        }
+      });
   });
 }
 
@@ -154,10 +175,6 @@ function editDot(map, markers, dotId,dotMap,dotMarker){
       $("#dotContent").val(dot.content);
       $("#dotStat_id").val(dot.stat_id);
       $("#dotUpdated_at").text(dot.updated_at);
-      google.maps.event.trigger(dotMap, 'resize');
-      dotMap.setCenter({lat:dot.lat, lng:dot.lng});
-      dotMarker.setPosition({lat:dot.lat, lng:dot.lng});
-      //console.log(dot);
     }
   })
 }
