@@ -11,6 +11,7 @@
 // about supported directives.
 //
 //= require jquery
+//= require bootstrap-sprockets
 //= require jquery_ujs
 //= require turbolinks
 //= require_tree .
@@ -26,7 +27,7 @@ function initMap() {
   //dot 수정에 활용하는 맵
   var dotMap = new google.maps.Map(document.getElementById('dotMap'), {
     zoom: 16,
-    center: {lat: 0, lng: 180}
+    center: {lat: 37, lng: 126}
   });
   var dotMarker = new google.maps.Marker({map: dotMap});
 
