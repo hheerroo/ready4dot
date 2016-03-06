@@ -154,6 +154,7 @@ function editDot(map, markers, dotId,dotMap,dotMarker){
       $("#dotContent").val(dot.content);
       $("#dotStat_id").val(dot.stat_id);
       $("#dotUpdated_at").text(dot.updated_at);
+      google.maps.event.trigger(dotMap, 'resize');
       dotMap.setCenter({lat:dot.lat, lng:dot.lng});
       dotMarker.setPosition({lat:dot.lat, lng:dot.lng});
       //console.log(dot);
