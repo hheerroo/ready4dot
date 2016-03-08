@@ -175,7 +175,10 @@ function editDot(map, markers, dotId,dotMap,dotMarker){
       $("#dotAddress").val(dot.address);
       $("#dotContent").val(dot.content);
       $("#dotStat_id").val(dot.stat_id);
-      $("#dotUpdated_at").text(dot.updated_at);
+      $("#dotCreated_at").text(dot.created_at);
+      //console.log(dot.created_at);
+      //console.log(dot.created_at.substr(0,16));
+      $("#dotUpdated_at2").val(dot.created_at.substr(0,16));
     }
   })
 }
