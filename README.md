@@ -24,8 +24,10 @@ Visit http://docs.c9.io for support, or to learn more about using Cloud9 IDE.
 To watch some training videos, visit http://www.youtube.com/user/c9ide
 
 개선 진행
-0. dotMap의 지연과 map의 중앙이 변하는 버그확인(modal과 충돌이 있는듯)
-1. dot수정을 통해 latlng병화시 address 연동진행
+0. timezone 적용필요
+1. 
+0. dotMap의 지연과 map의 중앙이 변하는 버그확인(modal과 충돌이 있는듯)//완료
+1. dot수정을 통해 latlng병화시 address 연동진행//완료
 2. 현재위치 로딩시 오래걸리는 시간을 대비해 버튼액션 적용
 
 문제점 몇가지

@@ -49,9 +49,9 @@ function initMap() {
   
   //dot생성 버튼 액션
   $('#makingDot').click(function() {
+    // 로딩버튼 추가
+    var $btn = $(this).button('loading');
     //현재위치를 불러와 latlng에 저장
-    // 버튼 로딩 변경 차후 추가
-
     if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(function(position) {
             var latlng = {
@@ -60,6 +60,8 @@ function initMap() {
             };
             //latlng을 이용한 dot생성
             makeDot(map,markers,latlng);
+            //로딩버튼 원상복구
+            $btn.button('reset');
           }, function() {
               makeInfoWindow(map, map.center(), 'Error: The Geolocation service failed.')
           });
@@ -68,7 +70,7 @@ function initMap() {
           makeInfoWindow(map, map.center(), 'Error: Your browser doesn\'t support geolocation.')
       }
       
-
+    //
   });
   
   
@@ -175,7 +177,7 @@ function editDot(map, markers, dotId,dotMap,dotMarker){
       $("#dotAddress").val(dot.address);
       $("#dotContent").val(dot.content);
       $("#dotStat_id").val(dot.stat_id);
-      $("#dotCreated_at").text(dot.created_at);
+      //$("#dotCreated_at").text(dot.created_at);
       //console.log(dot.created_at);
       //console.log(dot.created_at.substr(0,16));
       $("#dotUpdated_at2").val(dot.created_at.substr(0,16));
