@@ -100,6 +100,7 @@ function initMap() {
   $('body').on('click', '#updatingDot', function () {
       updateDot(map,markers);
   });
+  
   //dot수정시 위치변경 액션
   dotMap.addListener('dblclick',function (e) {
       $("#dotLat").val(e.latLng.lat());
